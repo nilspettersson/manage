@@ -31,14 +31,16 @@ function init(type) {
     let content = {
         type: type
     }
-    try {
+    if(!fs.existsSync(getPath() + "config")) {
         fs.mkdirSync(getPath() + "config");
     }
-    catch(error) {
+    if(!fs.existsSync(getPath() + "config/config.json")) {
+        writeFile("config/config.json", JSON.stringify(content));
+        console.log(chalk.green("config created"));
     }
-    
-
-    writeFile("config/config.json", JSON.stringify(content));
+    else {
+        console.log(chalk.yellow('config already exists'));
+    }
     
 }
 
