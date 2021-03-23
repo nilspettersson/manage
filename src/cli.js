@@ -15,40 +15,90 @@ export function cli(rawArgs) {
         type: {
             alias: "t",
             describe: "The type of project",
-            choices: "other",
+            choices: ["other", "php"],
         },
     });
+    console.log("");
+    console.log(chalk.bold(chalk.green("Manage")));
 
     if(rawArgs.length == 2 || args.argv.help) {
         args.showHelp();
     }
     else if(args.argv._[0] == "init") {
-        init(args.argv.type);
+        init(args);
     }
     
 }
 
-function init(type) {
+
+function init(args) {
     let content = {
-        type: type
+        type: args.argv.type
     }
-    if(!fs.existsSync(getPath() + "config")) {
-        fs.mkdirSync(getPath() + "config");
-    }
-    if(!fs.existsSync(getPath() + "config/config.json")) {
-        writeFile("config/config.json", JSON.stringify(content));
-        console.log(chalk.green("config created"));
+
+    if(!args.argv.type) {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "type",
+                message: "Type",
+                choices: [
+                    {
+                        name: "other"
+                    },
+                    {
+                        name: "php"
+                    }
+                ]
+            }
+        ]).then(answer => {
+            content.type = answer.type;
+            createConfig(content);
+        })
+
     }
     else {
-        console.log(chalk.yellow('config already exists'));
+        createConfig(content);
+    }
+}
+
+function createConfig(content) {
+    if(!fs.existsSync(FileSystem.getPath() + "config")) {
+        fs.mkdirSync(FileSystem.getPath() + "config");
+        
+    }
+    if(!fs.existsSync(FileSystem.getPath() + "config/config.json")) {
+        FileSystem.writeFile("config/config.json", JSON.stringify(content));
+        Print.success("config created");
+    }
+    else {
+        Print.warning('config already exists');
+    }
+}
+
+class FileSystem {
+    /**
+  * @param {string} path for file.
+  * @param {string} content content to write to file.
+  */
+    static writeFile(path, content) {
+        fs.writeFileSync(this.getPath() + path, content);
+    }
+
+    /**
+  * @return {string} current directory.
+  */
+    static getPath() {
+        return process.cwd() + "/";
+    }
+}
+
+class Print {
+    static warning(str) {
+        console.log(chalk.yellow(str));
     }
     
-}
-
-function writeFile(path, content) {
-    return fs.writeFileSync(getPath() + path, content);
-}
-
-function getPath() {
-    return process.cwd() + "/";
+    static success(str) {
+        console.log(chalk.green(str));
+    }
 }
