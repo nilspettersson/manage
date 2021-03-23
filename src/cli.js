@@ -1,6 +1,6 @@
 let yargs = require('yargs');
 let fs = require('fs');
-
+let chalk = require('chalk');
 export function cli(rawArgs) {
     let args = yargs
     .option("help", {
