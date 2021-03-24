@@ -116,7 +116,7 @@ function createConfig(config) {
     }
     if(!fs.existsSync(filesystem.getPath() + "config/config.json")) {
         filesystem.writeFile("config/config.json", JSON.stringify(config, null, "\t"));
-        print.success("config created");
+        print.success("config.json created");
     }
     else {
         print.warning('config already exists');
