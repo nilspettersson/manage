@@ -77,12 +77,27 @@ function init(args) {
             config.type = answer.type;
             createConfig(config);
             createPackageJson();
+            createGit();
         });
 
     }
     else {
         createConfig(config);
         createPackageJson();
+        createGit();
+    }
+}
+
+function createGit() {
+    shell.exec("git init");
+    createGitIgnore()
+}
+
+function createGitIgnore() {
+    if(!fs.existsSync(filesystem.getPath() + ".gitignore")) {
+        let ignore = "/node_modules";
+        filesystem.writeFile(".gitignore", ignore);
+        print.success(".gitignore created");
     }
 }
 
@@ -104,7 +119,6 @@ function createPackageJson() {
 
             }
         }
-
         filesystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
         print.success("package.json created");
     }
