@@ -76,11 +76,37 @@ function init(args) {
         ]).then(answer => {
             config.type = answer.type;
             createConfig(config);
-        })
+            createPackageJson();
+        });
 
     }
     else {
         createConfig(config);
+        createPackageJson();
+    }
+}
+
+function createPackageJson() {
+    if(!fs.existsSync(filesystem.getPath() + "package.json")) {
+        let name = filesystem.getName();
+        let packageJson = {
+            name: name,
+            version: "0.1.0",
+            description: "cli management tool",
+            main: "index.js",
+            scripts: {
+                test: "echo \"Error: no test specified\" && exit 1"
+            },
+            keywords: [],
+            author: "",
+            license: "ISC",
+            dependencies: {
+
+            }
+        }
+
+        filesystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
+        print.success("package.json created");
     }
 }
 
