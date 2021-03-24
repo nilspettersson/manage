@@ -46,10 +46,12 @@ function handleCommands(args, rawArgs) {
 
 
 function init(args) {
-    let content = {
+    let config = {
         type: args.argv.type,
-        lib: {
-
+        libraries: {
+            common: {
+                version: "1.0.0" 
+            }
         }
     }
 
@@ -72,22 +74,22 @@ function init(args) {
                 ]
             }
         ]).then(answer => {
-            content.type = answer.type;
-            createConfig(content);
+            config.type = answer.type;
+            createConfig(config);
         })
 
     }
     else {
-        createConfig(content);
+        createConfig(config);
     }
 }
 
-function createConfig(content) {
+function createConfig(config) {
     if(!fs.existsSync(filesystem.getPath() + "config")) {
         fs.mkdirSync(filesystem.getPath() + "config");
     }
     if(!fs.existsSync(filesystem.getPath() + "config/config.json")) {
-        filesystem.writeFile("config/config.json", JSON.stringify(content));
+        filesystem.writeFile("config/config.json", JSON.stringify(config, null, "\t"));
         print.success("config created");
     }
     else {
