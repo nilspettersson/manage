@@ -2,7 +2,20 @@ let yargs = require('yargs');
 let fs = require('fs');
 let chalk = require('chalk');
 let inquirer = require('inquirer');
+let shell = require('shelljs');
+
+let filesystem = require("./lib/filesystem");
+let print = require("./lib/print");
+
 export function cli(rawArgs) {
+    global.yargs = yargs;
+    global.fs = fs;
+    global.chalk = chalk;
+    global.inquirer = inquirer;
+    global.shell = shell;
+
+    global.rawArgs = rawArgs;
+
     let args = yargs
     .option("help", {
         alias: "h",
@@ -15,25 +28,29 @@ export function cli(rawArgs) {
         type: {
             alias: "t",
             describe: "The type of project",
-            choices: ["other", "php"],
+            choices: ["static", "php", "other"],
         },
     });
-    console.log("");
-    console.log(chalk.bold(chalk.green("Manage")));
 
+    handleCommands(args, rawArgs);
+}
+
+function handleCommands(args, rawArgs) {
     if(rawArgs.length == 2 || args.argv.help) {
         args.showHelp();
     }
     else if(args.argv._[0] == "init") {
         init(args);
     }
-    
 }
 
 
 function init(args) {
     let content = {
-        type: args.argv.type
+        type: args.argv.type,
+        lib: {
+
+        }
     }
 
     if(!args.argv.type) {
@@ -44,10 +61,13 @@ function init(args) {
                 message: "Type",
                 choices: [
                     {
-                        name: "other"
+                        name: "static"
                     },
                     {
                         name: "php"
+                    },
+                    {
+                        name: "other"
                     }
                 ]
             }
@@ -63,42 +83,14 @@ function init(args) {
 }
 
 function createConfig(content) {
-    if(!fs.existsSync(FileSystem.getPath() + "config")) {
-        fs.mkdirSync(FileSystem.getPath() + "config");
-        
+    if(!fs.existsSync(filesystem.getPath() + "config")) {
+        fs.mkdirSync(filesystem.getPath() + "config");
     }
-    if(!fs.existsSync(FileSystem.getPath() + "config/config.json")) {
-        FileSystem.writeFile("config/config.json", JSON.stringify(content));
-        Print.success("config created");
+    if(!fs.existsSync(filesystem.getPath() + "config/config.json")) {
+        filesystem.writeFile("config/config.json", JSON.stringify(content));
+        print.success("config created");
     }
     else {
-        Print.warning('config already exists');
-    }
-}
-
-class FileSystem {
-    /**
-  * @param {string} path for file.
-  * @param {string} content content to write to file.
-  */
-    static writeFile(path, content) {
-        fs.writeFileSync(this.getPath() + path, content);
-    }
-
-    /**
-  * @return {string} current directory.
-  */
-    static getPath() {
-        return process.cwd() + "/";
-    }
-}
-
-class Print {
-    static warning(str) {
-        console.log(chalk.yellow(str));
-    }
-    
-    static success(str) {
-        console.log(chalk.green(str));
+        print.warning('config already exists');
     }
 }
