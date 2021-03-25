@@ -28,7 +28,7 @@ export function cli(rawArgs) {
         type: {
             alias: "t",
             describe: "The type of project",
-            choices: ["static", "php", "other"],
+            choices: ["static", "php", "node", "other"],
         },
     });
 
@@ -69,6 +69,9 @@ function init(args) {
                         name: "php"
                     },
                     {
+                        name: "node"
+                    },
+                    {
                         name: "other"
                     }
                 ]
@@ -76,14 +79,14 @@ function init(args) {
         ]).then(answer => {
             config.type = answer.type;
             createConfig(config);
-            createPackageJson();
+            createPackageJson(config);
             createGit();
         });
 
     }
     else {
         createConfig(config);
-        createPackageJson();
+        createPackageJson(config);
         createGit();
     }
 }
@@ -101,7 +104,7 @@ function createGitIgnore() {
     }
 }
 
-function createPackageJson() {
+function createPackageJson(config) {
     if(!fs.existsSync(filesystem.getPath() + "package.json")) {
         let name = filesystem.getName();
         let packageJson = {
@@ -119,9 +122,17 @@ function createPackageJson() {
 
             }
         }
+
+        if(config.type == "node") {
+            packageJson.scripts["start"] = "node app/index.js";
+            packageJson.dependencies["express"] = "^4.17.1";
+        }
+
         filesystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
         print.success("package.json created");
     }
+
+    shell.exec("npm install");
 }
 
 function createConfig(config) {
