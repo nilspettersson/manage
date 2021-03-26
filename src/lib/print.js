@@ -7,6 +7,10 @@ export class Print {
     static success(str) {
         console.log(chalk.green(str));
     }
+
+    static info(str) {
+        console.log(chalk.blueBright(str));
+    }
     
     static error(str) {
         console.log(chalk.red(str));

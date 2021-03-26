@@ -24,4 +24,12 @@ export class FileSystem {
      static getName() {
         return basename(resolve(process.cwd()))
     }
+
+    /**
+    * @param {string} path Relative path.
+    * @return {boolean} Returns true if path exists.
+    */
+    static exists(path) {
+        return fs.existsSync(FileSystem.getPath() + path);
+    }
 }
