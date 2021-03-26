@@ -56,51 +56,74 @@ export class Init extends Command {
     init(config) {
         this.createConfig(config);
         this.createGit();
+        if(config.type == "node"){
+            this.createDockerfile();
+            this.createApp();
+        }
         this.createPackageJson(config);
-        this.createDockerfile();
     }
 
-    createDockerfile() {
-        if(!fs.existsSync(FileSystem.getPath() + "Dockerfile")) {
-            let content = 'FROM node:9-slim\n' +
-            'WORKDIR /usr/src/app\n' +
-            'EXPOSE 3000\n' +
-            'CMD ["npm", "start"]\n';
-            FileSystem.writeFile("Dockerfile", content);
-            Print.success("Dockerfile created");
-
-            this.createDockerCompose();
+    createConfig(config) {
+        if(!fs.existsSync(FileSystem.getPath() + "config")) {
+            fs.mkdirSync(FileSystem.getPath() + "config");
+        }
+        if(!fs.existsSync(FileSystem.getPath() + "config/config.json")) {
+            FileSystem.writeFile("config/config.json", JSON.stringify(config, null, "\t"));
+            Print.success("config.json created");
+        }
+        else {
+            Print.warning('config already exists');
         }
     }
 
-    createDockerCompose() {
-        if(!fs.existsSync(FileSystem.getPath() + "docker-compose.yml")) {
-            let content = 'version: "3"\n' +
-            'services: \n' +
-            '  app:\n' +
-            '    container_name: docker-node-mongo\n' +
-            '    restart: always\n' +
-            '    build: .\n' +
-            '    ports:\n' +
-            '      - "80:3000"\n' +
-            '    volumes: \n' +
-            '      - .:/usr/src/app\n';
-            FileSystem.writeFile("docker-compose.yml", content);
-            Print.success("docker-compose created");
-        }
-    }
-    
     createGit() {
         shell.exec("git init");
         this.createGitIgnore();
     }
+
+    createDockerfile() {
+        let content = 'FROM node:9-slim\n' +
+        'WORKDIR /usr/src/app\n' +
+        'EXPOSE 3000\n' +
+        'CMD ["npm", "start"]\n';
+        FileSystem.writeFile("Dockerfile", content);
+        Print.success("Dockerfile created");
+
+        this.createDockerCompose();
+    }
+
+    createDockerCompose() {
+        let content = 'version: "3"\n' +
+        'services: \n' +
+        '  app:\n' +
+        '    container_name: docker-node-mongo\n' +
+        '    restart: always\n' +
+        '    build: .\n' +
+        '    ports:\n' +
+        '      - "80:3000"\n' +
+        '    volumes: \n' +
+        '      - .:/usr/src/app\n';
+        FileSystem.writeFile("docker-compose.yml", content);
+        Print.success("docker-compose created");
+    }
     
     createGitIgnore() {
-        if(!fs.existsSync(FileSystem.getPath() + ".gitignore")) {
-            let ignore = "/node_modules";
-            FileSystem.writeFile(".gitignore", ignore);
-            Print.success(".gitignore created");
-        }
+        let ignore = "/node_modules";
+        FileSystem.writeFile(".gitignore", ignore);
+        Print.success(".gitignore created");
+    }
+
+    createApp() {
+        let content = 'const express = require("express");\n' +
+        'const app = express();\n' +
+        'app.get("/", (request, response) => {\n' +
+        '   response.send("<h1>Manage site</h1>");\n' +
+        '});\n' +
+        'const PORT = process.env.PORT || 3000;\n' +
+        'app.listen(PORT, () => console.log("server started on port " + PORT));'
+        fs.mkdirSync(FileSystem.getPath() + "app");
+        FileSystem.writeFile("app/index.js", content);
+        Print.success("config.json created");
     }
     
     createPackageJson(config) {
@@ -131,19 +154,6 @@ export class Init extends Command {
         }
     
         shell.exec("npm install");
-    }
-    
-    createConfig(config) {
-        if(!fs.existsSync(FileSystem.getPath() + "config")) {
-            fs.mkdirSync(FileSystem.getPath() + "config");
-        }
-        if(!fs.existsSync(FileSystem.getPath() + "config/config.json")) {
-            FileSystem.writeFile("config/config.json", JSON.stringify(config, null, "\t"));
-            Print.success("config.json created");
-        }
-        else {
-            Print.warning('config already exists');
-        }
     }
 
 }
