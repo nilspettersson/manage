@@ -23,38 +23,40 @@ export class Init extends Command {
     
         if(!this.args.argv.type) {
             inquirer.prompt([
-                {
-                    type: "list",
-                    name: "type",
-                    message: "Type",
-                    choices: [
-                        {
-                            name: "static"
-                        },
-                        {
-                            name: "php"
-                        },
-                        {
-                            name: "node"
-                        },
-                        {
-                            name: "other"
-                        }
-                    ]
-                }
+            {
+                type: "list",
+                name: "type",
+                message: "Type",
+                choices: [
+                    {
+                        name: "static"
+                    },
+                    {
+                        name: "php"
+                    },
+                    {
+                        name: "node"
+                    },
+                    {
+                        name: "other"
+                    }
+                ]
+            }
             ]).then(answer => {
                 config.type = answer.type;
-                this.createConfig(config);
-                this.createGit();
-                this.createPackageJson(config);
+                this.init(config);
             });
     
         }
         else {
-            this.createConfig(config);
-            this.createGit();
-            this.createPackageJson(config);
+            this.init(config);
         }
+    }
+
+    init(config) {
+        this.createConfig(config);
+        this.createGit();
+        this.createPackageJson(config);
     }
     
     createGit() {
@@ -79,7 +81,6 @@ export class Init extends Command {
                 description: "cli management tool",
                 main: "index.js",
                 scripts: {
-    
                 },
                 keywords: [],
                 author: "",
