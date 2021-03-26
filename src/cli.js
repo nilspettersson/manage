@@ -1,34 +1,10 @@
 import { Init } from './commands/init';
+import { Manage } from './manage';
 
-let yargs = require('yargs');
+export function cli() {
 
-export function cli(rawArgs) {
-    let args = yargs
-    .option("help", {
-        alias: "h",
-    })
-    .option("version", {
-        alias: "v",
-        global: false
-    })
-    .command("init", "Initilize a new project", {
-        type: {
-            alias: "t",
-            describe: "The type of project",
-            choices: ["static", "php", "node", "other"],
-        },
-    });
+    let manage = new Manage();
+    manage.add(new Init());
+    manage.start();
     
-    handleCommands(args, rawArgs);
-}
-
-function handleCommands(args, rawArgs) {
-    if(rawArgs.length == 2 || args.argv.help) {
-        args.showHelp();
-    }
-    else if(args.argv._[0] == "init") {
-        let init = new Init();
-        init.args = args;
-        init.execute();
-    }
 }

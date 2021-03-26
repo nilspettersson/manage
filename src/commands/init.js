@@ -1,6 +1,6 @@
 import { FileSystem } from "../lib/filesystem";
 import { Print } from "../lib/print";
-import { Command } from "./command";
+import { Command } from "./base/command";
 
 let inquirer = require('inquirer');
 let shell = require('shelljs');
