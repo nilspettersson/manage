@@ -1,23 +1,27 @@
 import { basename, resolve } from 'path';
 
-/**
- * @param {string} path for file.
- * @param {string} content content to write to file.
- */
-export function writeFile(path, content) {
-    fs.writeFileSync(this.getPath() + path, content);
-}
+let fs = require('fs');
 
-/**
-* @return {string} current directory path.
-*/
-export function getPath() {
-    return process.cwd() + "/";
-}
+export class FileSystem {
+    /**
+     * @param {string} path for file.
+     * @param {string} content content to write to file.
+     */
+    static writeFile(path, content) {
+        fs.writeFileSync(this.getPath() + path, content);
+    }
 
-/**
-* @return {string} current directory name.
-*/
-export function getName() {
-    return basename(resolve(process.cwd()))
+    /**
+    * @return {string} current directory path.
+    */
+     static getPath() {
+        return process.cwd() + "/";
+    }
+
+    /**
+    * @return {string} current directory name.
+    */
+     static getName() {
+        return basename(resolve(process.cwd()))
+    }
 }
