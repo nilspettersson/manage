@@ -57,6 +57,37 @@ export class Init extends Command {
         this.createConfig(config);
         this.createGit();
         this.createPackageJson(config);
+        this.createDockerfile();
+    }
+
+    createDockerfile() {
+        if(!fs.existsSync(FileSystem.getPath() + "Dockerfile")) {
+            let content = 'FROM node:9-slim\n' +
+            'WORKDIR /usr/src/app\n' +
+            'EXPOSE 3000\n' +
+            'CMD ["npm", "start"]\n';
+            FileSystem.writeFile("Dockerfile", content);
+            Print.success("Dockerfile created");
+
+            this.createDockerCompose();
+        }
+    }
+
+    createDockerCompose() {
+        if(!fs.existsSync(FileSystem.getPath() + "docker-compose.yml")) {
+            let content = 'version: "3"\n' +
+            'services: \n' +
+            '  app:\n' +
+            '    container_name: docker-node-mongo\n' +
+            '    restart: always\n' +
+            '    build: .\n' +
+            '    ports:\n' +
+            '      - "80:3000"\n' +
+            '    volumes: \n' +
+            '      - .:/usr/src/app\n';
+            FileSystem.writeFile("docker-compose.yml", content);
+            Print.success("docker-compose created");
+        }
     }
     
     createGit() {
