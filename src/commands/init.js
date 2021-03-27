@@ -90,8 +90,11 @@ export class Init extends Command {
     createDockerfile() {
         let content = 'FROM node:9-slim\n' +
         'WORKDIR /usr/src/app\n' +
+        'COPY package.json .\n' +
+        'RUN npm install\n' +
+        'COPY . .\n' +
         'EXPOSE 3000\n' +
-        'CMD ["npm", "start"]\n';
+        'CMD ["npm", "run", "start-dev"]\n';
         FileSystem.writeFile("Dockerfile", content);
         Print.success("Dockerfile created");
 
@@ -102,13 +105,14 @@ export class Init extends Command {
         let content = 'version: "3"\n' +
         'services: \n' +
         '  app:\n' +
-        '    container_name: docker-node\n' +
+        '    container_name: ' + FileSystem.getName() +'-docker-node\n' +
         '    restart: always\n' +
         '    build: .\n' +
         '    ports:\n' +
-        '      - "80:3000"\n' +
+        '      - "3000:3000"\n' +
         '    volumes: \n' +
-        '      - .:/usr/src/app\n';
+        '      - .:/usr/src/app\n' +
+        '      - /usr/src/app/node_modules';
         FileSystem.writeFile("docker-compose.yml", content);
         Print.success("docker-compose created");
     }
@@ -138,14 +142,16 @@ export class Init extends Command {
             keywords: [],
             author: "",
             license: "ISC",
-            dependencies: {
-
-            }
+            dependencies: {},
+            devDependencies: {}
         }
 
         if(config.type == "node") {
             packageJson.scripts["start"] = "node app/index.js";
+            packageJson.scripts["start-dev"] = "nodemon app/index.js -L";
             packageJson.dependencies["express"] = "^4.17.1";
+
+            packageJson.devDependencies["nodemon"] = "^2.0.7";
         }
 
         FileSystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
