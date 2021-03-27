@@ -81,6 +81,12 @@ export class Init extends Command {
         this.createGitIgnore();
     }
 
+    createGitIgnore() {
+        let ignore = "/node_modules";
+        FileSystem.writeFile(".gitignore", ignore);
+        Print.success(".gitignore created");
+    }
+
     createDockerfile() {
         let content = 'FROM node:9-slim\n' +
         'WORKDIR /usr/src/app\n' +
@@ -96,7 +102,7 @@ export class Init extends Command {
         let content = 'version: "3"\n' +
         'services: \n' +
         '  app:\n' +
-        '    container_name: docker-node-mongo\n' +
+        '    container_name: docker-node\n' +
         '    restart: always\n' +
         '    build: .\n' +
         '    ports:\n' +
@@ -105,12 +111,6 @@ export class Init extends Command {
         '      - .:/usr/src/app\n';
         FileSystem.writeFile("docker-compose.yml", content);
         Print.success("docker-compose created");
-    }
-    
-    createGitIgnore() {
-        let ignore = "/node_modules";
-        FileSystem.writeFile(".gitignore", ignore);
-        Print.success(".gitignore created");
     }
 
     createApp() {
@@ -127,32 +127,30 @@ export class Init extends Command {
     }
     
     createPackageJson(config) {
-        if(!fs.existsSync(FileSystem.getPath() + "package.json")) {
-            let name = FileSystem.getName();
-            let packageJson = {
-                name: name,
-                version: "0.1.0",
-                description: "cli management tool",
-                main: "index.js",
-                scripts: {
-                },
-                keywords: [],
-                author: "",
-                license: "ISC",
-                dependencies: {
-    
-                }
+        let name = FileSystem.getName();
+        let packageJson = {
+            name: name,
+            version: "0.1.0",
+            description: "cli management tool",
+            main: "index.js",
+            scripts: {
+            },
+            keywords: [],
+            author: "",
+            license: "ISC",
+            dependencies: {
+
             }
-    
-            if(config.type == "node") {
-                packageJson.scripts["start"] = "node app/index.js";
-                packageJson.dependencies["express"] = "^4.17.1";
-            }
-    
-            FileSystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
-            Print.success("package.json created");
         }
-    
+
+        if(config.type == "node") {
+            packageJson.scripts["start"] = "node app/index.js";
+            packageJson.dependencies["express"] = "^4.17.1";
+        }
+
+        FileSystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
+        Print.success("package.json created");
+
         shell.exec("npm install");
     }
 

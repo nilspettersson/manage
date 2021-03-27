@@ -21,7 +21,8 @@ export class Command {
     }
 
     /**
-     *  Will execute if there is no commands comming after this one  
+     *  Will execute if there is no commands comming after this one
+     * @returns {void}
      */
     execute() {
         Print.warning("No execution for this command ");
@@ -30,6 +31,7 @@ export class Command {
     /**
      *  Will check if there is a command after this one
      * if not it will execute this command.
+     * @returns {void}
      */
     start() {
         for(let i = 0; i < this.commands.length; i++) {
