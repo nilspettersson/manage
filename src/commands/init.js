@@ -58,8 +58,8 @@ export class Init extends Command {
         this.createGit();
         if(config.type == "node"){
             this.createDockerfile();
-            this.createApp();
         }
+        this.createProject(config);
         this.createPackageJson(config);
     }
 
@@ -117,17 +117,23 @@ export class Init extends Command {
         Print.success("docker-compose created");
     }
 
-    createApp() {
-        let content = 'const express = require("express");\n' +
-        'const app = express();\n' +
-        'app.get("/", (request, response) => {\n' +
-        '   response.send("<h1>Manage site</h1>");\n' +
-        '});\n' +
-        'const PORT = process.env.PORT || 3000;\n' +
-        'app.listen(PORT, () => console.log("server started on port " + PORT));'
-        fs.mkdirSync(FileSystem.getPath() + "app");
-        FileSystem.writeFile("app/index.js", content);
-        Print.success("config.json created");
+    createProject(config) {
+        fs.mkdirSync(FileSystem.getPath() + "project");
+        FileSystem.createDir("project/client");
+        FileSystem.createDir("project/static");
+
+        if(config.type == "node") {
+            let content = 'const express = require("express");\n' +
+            'const app = express();\n' +
+            'app.get("/", (request, response) => {\n' +
+            '   response.send("<h1>Manage site</h1>");\n' +
+            '});\n' +
+            'const PORT = process.env.PORT || 3000;\n' +
+            'app.listen(PORT, () => console.log("server started on port " + PORT));'
+
+            FileSystem.writeFile("project/index.js", content);
+            Print.success("index.js created");
+        }
     }
     
     createPackageJson(config) {

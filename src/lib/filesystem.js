@@ -12,6 +12,13 @@ export class FileSystem {
     }
 
     /**
+     * @param {string} path Path for dir.
+     */
+    static createDir(path) {
+        fs.mkdirSync(FileSystem.getPath() + path);
+    }
+
+    /**
     * @return {string} current directory path.
     */
      static getPath() {
