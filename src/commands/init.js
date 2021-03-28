@@ -157,14 +157,11 @@ export class Init extends Command {
             packageJson.scripts["start"] = "node app/index.js";
             packageJson.scripts["start-dev"] = "nodemon project/index.js -L";
             packageJson.dependencies["express"] = "^4.17.1";
-
             packageJson.devDependencies["nodemon"] = "^2.0.7";
         }
 
         FileSystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
         Print.success("package.json created");
-
-        shell.exec("npm install");
     }
 
 }
