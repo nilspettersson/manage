@@ -14,6 +14,7 @@ export class Init extends Command {
 
     execute() {
         let config = {
+            name: FileSystem.getName(),
             type: this.args.argv.type,
             libraries: {
                 common: {
@@ -138,11 +139,10 @@ export class Init extends Command {
     }
     
     createPackageJson(config) {
-        let name = FileSystem.getName();
         let packageJson = {
-            name: name,
-            version: "0.1.0",
-            description: "cli management tool",
+            name: config.name,
+            version: "1.0.0",
+            description: "Generated",
             main: "index.js",
             scripts: {
             },
