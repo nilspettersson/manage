@@ -1,4 +1,5 @@
 import { DockerFile } from "../create/docker";
+import { PackageJson } from "../create/package-json";
 import { FileSystem } from "../lib/filesystem";
 import { Print } from "../lib/print";
 import { Command } from "./base/command";
@@ -56,13 +57,18 @@ export class Init extends Command {
     }
 
     init(config) {
-        this.createConfig(config);
         this.createGit();
+        this.createConfig(config);
         if(config.type == "node"){
             this.createDockerfile();
         }
         this.createProject(config);
         this.createPackageJson(config);
+    }
+
+    createGit() {
+        shell.exec("git init");
+        this.createGitIgnore();
     }
 
     createConfig(config) {
@@ -78,9 +84,12 @@ export class Init extends Command {
         }
     }
 
-    createGit() {
-        shell.exec("git init");
-        this.createGitIgnore();
+    createPackageJson(config) {
+        let packageJson = new PackageJson(config);
+        if(config.type == "node"){
+            packageJson.expressDependencies();
+        }
+        packageJson.create("/");
     }
 
     createGitIgnore() {
@@ -120,9 +129,15 @@ export class Init extends Command {
     }
 
     createProject(config) {
-        fs.mkdirSync(FileSystem.getPath() + "project");
-        FileSystem.createDir("project/client");
-        FileSystem.createDir("project/static");
+        FileSystem.createDir("project");
+        FileSystem.createDir("project/controllers");
+        FileSystem.createDir("project/models");
+        FileSystem.createDir("project/routes");
+        FileSystem.createDir("project/views");
+        FileSystem.createDir("project/public");
+        FileSystem.createDir("project/public/img");
+        FileSystem.createDir("project/public/css");
+        FileSystem.createDir("project/public/scss");
 
         if(config.type == "node") {
             let content = 'const express = require("express");\n' +
@@ -136,32 +151,6 @@ export class Init extends Command {
             FileSystem.writeFile("project/index.js", content);
             Print.success("index.js created");
         }
-    }
-    
-    createPackageJson(config) {
-        let packageJson = {
-            name: config.name,
-            version: "1.0.0",
-            description: "Generated",
-            main: "index.js",
-            scripts: {
-            },
-            keywords: [],
-            author: "",
-            license: "ISC",
-            dependencies: {},
-            devDependencies: {}
-        }
-
-        if(config.type == "node") {
-            packageJson.scripts["start"] = "node app/index.js";
-            packageJson.scripts["start-dev"] = "nodemon project/index.js -L";
-            packageJson.dependencies["express"] = "^4.17.1";
-            packageJson.devDependencies["nodemon"] = "^2.0.7";
-        }
-
-        FileSystem.writeFile("package.json", JSON.stringify(packageJson, null, "\t"));
-        Print.success("package.json created");
     }
 
 }
