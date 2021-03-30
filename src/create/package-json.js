@@ -36,7 +36,10 @@ export class PackageJson {
     expressDependencies() {
         this.packageJson.scripts["start"] = "node app/index.js";
         this.packageJson.scripts["start-dev"] = "nodemon project/index.js -L";
+        
         this.packageJson.dependencies["express"] = "^4.17.1";
+        this.packageJson.dependencies["ejs"] = "^3.1.6";
+
         this.packageJson.devDependencies["nodemon"] = "^2.0.7";
     }
 

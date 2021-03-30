@@ -17,11 +17,6 @@ export class Init extends Command {
         let config = {
             name: FileSystem.getName(),
             type: this.args.argv.type,
-            libraries: {
-                common: {
-                    version: "1.0.0" 
-                }
-            }
         }
     
         if(!this.args.argv.type) {
