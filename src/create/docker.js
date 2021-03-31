@@ -1,3 +1,5 @@
+const YAML = require('yaml');
+
 import { FileSystem } from "../lib/filesystem";
 
 export class DockerFile {
@@ -62,4 +64,60 @@ export class DockerFile {
         
     }
     
+}
+
+export class DockerCompose {
+    /**
+     * Extra volumes.
+     */
+    static VOLUMES = {
+        NODE_MODULES: "/usr/src/app/node_modules"
+    }
+
+    constructor() {
+        this.compose = {
+            version: "3",
+            services: {
+
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {string} serviceName Name of the service you want to create.
+     * @param {string} containerName Name of the service container.
+     */
+    addService(serviceName, containerName) {
+        this.compose["services"][serviceName] = {
+            container_name: containerName,
+            restart: "always",
+            build: ".",
+            ports: [
+                "3000:3000"
+            ],
+            volumes: [
+                ".:/usr/src/app",
+            ]
+        }
+    }
+
+    /**
+     * 
+     * @param {string} serviceName Name of the service.
+     * @param {string} volume Volume like docker volume create.
+     */
+    addVolume(serviceName, volume) {
+        this.compose["services"][serviceName]["volumes"].push(volume);
+    }
+
+    /**
+     * Converts the json object in this class to yaml string
+     * @returns {string}
+     */
+    toYaml() {
+        let doc = new YAML.Document();
+        doc.contents = this.compose;
+        return doc.toString();
+    }
 }
