@@ -3,3 +3,9 @@
 
 ### Dependencies:
 * Docker
+* Node
+
+### Commands:
+* Manage init
+* Manage start
+* Manage stop
