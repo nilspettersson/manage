@@ -1,4 +1,4 @@
-import { DockerFile } from "../create/docker";
+import { DockerCompose, DockerFile } from "../create/docker";
 import { PackageJson } from "../create/package-json";
 import { FileSystem } from "../lib/filesystem";
 import { Print } from "../lib/print";
@@ -102,8 +102,8 @@ export class Init extends Command {
         dockerfile.workDir("/usr/src/app");
         dockerfile.copy("package.json", ".");
         dockerfile.run("npm install");
-        dockerfile.copy(".", ".")
-        dockerfile.expose("3000")
+        dockerfile.copy(".", ".");
+        dockerfile.expose("3000");
         dockerfile.cmd("npm run start-dev");
         if(dockerfile.create()){
             Print.success("Dockerfile created");
@@ -113,18 +113,10 @@ export class Init extends Command {
     }
 
     createDockerCompose() {
-        let content = 'version: "3"\n' +
-        'services: \n' +
-        '  app:\n' +
-        '    container_name: ' + FileSystem.getName() +'-docker-node\n' +
-        '    restart: always\n' +
-        '    build: .\n' +
-        '    ports:\n' +
-        '      - "3000:3000"\n' +
-        '    volumes: \n' +
-        '      - .:/usr/src/app\n' +
-        '      - /usr/src/app/node_modules';
-        FileSystem.writeFile("docker-compose.yml", content);
+        let dockerCompose = new DockerCompose();
+        dockerCompose.addService("app", FileSystem.getName());
+        dockerCompose.addVolume("app", DockerCompose.VOLUMES.NODE_MODULES)
+        FileSystem.writeFile("docker-compose.yml", dockerCompose.toYaml());
     }
 
     createProject(config) {
