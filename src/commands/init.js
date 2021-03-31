@@ -80,11 +80,15 @@ export class Init extends Command {
     }
 
     createPackageJson(config) {
-        let packageJson = new PackageJson(config);
+        let packageJsonServer = new PackageJson(config);
         if(config.type == "node"){
-            packageJson.expressDependencies();
+            packageJsonServer.expressDependencies();
         }
-        packageJson.create("/");
+        packageJsonServer.create("/");
+
+
+        let packageJson = new PackageJson(config);
+        packageJson.create("project/public/");
     }
 
     createGitIgnore() {
