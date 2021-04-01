@@ -120,4 +120,16 @@ export class DockerCompose {
         doc.contents = this.compose;
         return doc.toString();
     }
+
+    /**
+     * 
+     * @returns {boolean} Success
+     */
+    create() {
+        if(!FileSystem.exists("docker-compose.yml")){
+            FileSystem.writeFile("docker-compose.yml", this.toYaml());
+            return true;
+        }
+        return false;
+    }
 }
