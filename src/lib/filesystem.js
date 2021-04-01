@@ -4,29 +4,39 @@ let fs = require('fs');
 
 export class FileSystem {
     /**
-     * @param {string} path for file.
-     * @param {string} content content to write to file.
+     * @param {string} path Path for file.
+     * @param {string} content Content to write to file.
+     * @returns {boolean}
      */
     static writeFile(path, content) {
-        fs.writeFileSync(this.getPath() + path, content);
+        if(!this.exists(path)){
+            fs.writeFileSync(this.getPath() + path, content);
+            return true;
+        }
+        return false;
     }
+
 
     /**
      * @param {string} path Path for dir.
      */
     static createDir(path) {
-        fs.mkdirSync(FileSystem.getPath() + path);
+        if(!this.exists(path)){
+            fs.mkdirSync(FileSystem.getPath() + path);
+            return true;
+        }
+            return false;
     }
 
     /**
-    * @return {string} current directory path.
+    * @return {string} Current directory path.
     */
      static getPath() {
         return process.cwd() + "/";
     }
 
     /**
-    * @return {string} current directory name.
+    * @return {string} Current directory name.
     */
      static getName() {
         return basename(resolve(process.cwd()))
