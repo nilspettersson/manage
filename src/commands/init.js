@@ -66,12 +66,20 @@ export class Init extends Command {
         this.createGitIgnore();
     }
 
-    createConfig(config) {
-        if(!fs.existsSync(FileSystem.getPath() + "config")) {
-            fs.mkdirSync(FileSystem.getPath() + "config");
+    createGitIgnore() {
+        let ignore = "/node_modules";
+        if(FileSystem.writeFile(".gitignore", ignore)){
+            Print.success(".gitignore created");
         }
-        if(!fs.existsSync(FileSystem.getPath() + "config/config.json")) {
-            FileSystem.writeFile("config/config.json", JSON.stringify(config, null, "\t"));
+        else {
+            Print.warning(".gitignore already exists");
+        }
+        
+    }
+
+    createConfig(config) {
+        FileSystem.createDir("config");
+        if(FileSystem.writeFile("config/config.json", JSON.stringify(config, null, "\t"))) {
             Print.success("config.json created");
         }
         else {
@@ -91,12 +99,6 @@ export class Init extends Command {
         packageJson.create("project/public/");
     }
 
-    createGitIgnore() {
-        let ignore = "/node_modules";
-        FileSystem.writeFile(".gitignore", ignore);
-        Print.success(".gitignore created");
-    }
-
     createDockerfile() {
         let dockerfile = new DockerFile(DockerFile.IMAGES.NODE);
         dockerfile.workDir("/usr/src/app");
@@ -114,9 +116,11 @@ export class Init extends Command {
 
     createDockerCompose() {
         let dockerCompose = new DockerCompose();
-        dockerCompose.addService("app", FileSystem.getName());
+        dockerCompose.addService("app", FileSystem.getName() + ".app");
         dockerCompose.addVolume("app", DockerCompose.VOLUMES.NODE_MODULES)
-        FileSystem.writeFile("docker-compose.yml", dockerCompose.toYaml());
+        if(dockerCompose.create()) {
+            Print.success("Docker-compose.yml created");
+        }
     }
 
     createProject(config) {
@@ -139,8 +143,13 @@ export class Init extends Command {
             'const PORT = process.env.PORT || 3000;\n' +
             'app.listen(PORT, () => console.log("server started on port " + PORT));'
 
-            FileSystem.writeFile("project/index.js", content);
-            Print.success("index.js created");
+            if(FileSystem.writeFile("project/index.js", content)){
+                Print.success("index.js created");
+            }
+            else {
+                Print.warning("index.js already exists");
+            }
+            
         }
     }
 
