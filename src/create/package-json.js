@@ -48,7 +48,11 @@ export class PackageJson {
      * @param {string} path File folder path.
      */
     create(path) {
-        FileSystem.writeFile(path + "package.json", JSON.stringify(this.packageJson, null, "\t"));
-        Print.success("package.json created");
+        if(FileSystem.writeFile(path + "package.json", JSON.stringify(this.packageJson, null, "\t"))) {
+            Print.success("package.json created");
+        }
+        else {
+            Print.warning("package.json already exists");
+        }
     }
 }
