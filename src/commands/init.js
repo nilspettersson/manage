@@ -2,6 +2,7 @@ import { DockerCompose, DockerFile } from "../create/docker";
 import { PackageJson } from "../create/package-json";
 import { FileSystem } from "../lib/filesystem";
 import { Print } from "../lib/print";
+import { Util } from "../lib/util";
 import { Command } from "./base/command";
 
 let inquirer = require('inquirer');
@@ -135,21 +136,16 @@ export class Init extends Command {
         FileSystem.createDir("project/public/scss");
 
         if(config.type == "node") {
-            let content = 'const express = require("express");\n' +
-            'const app = express();\n' +
-            'app.get("/", (request, response) => {\n' +
-            '   response.send("<h1>Manage site</h1>");\n' +
-            '});\n' +
-            'const PORT = process.env.PORT || 3000;\n' +
-            'app.listen(PORT, () => console.log("server started on port " + PORT));'
-
-            if(FileSystem.writeFile("project/app.js", content)){
+            if(FileSystem.writeFile("project/app.js", Util.getPreset("node/node-app"))){
                 Print.success("app.js created");
             }
             else {
                 Print.warning("app.js already exists");
             }
-            
+            FileSystem.writeFile("project/views/index.ejs", Util.getPreset("node/node-view"));
+            FileSystem.writeFile("project/controllers/homeController.js", Util.getPreset("node/node-controller"));
+            FileSystem.writeFile("project/routes/routes.js", Util.getPreset("node/node-routes"));
+
         }
     }
 
