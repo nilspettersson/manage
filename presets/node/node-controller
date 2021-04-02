@@ -1,0 +1,5 @@
+module.exports = class HomeController {
+    static get(req, res) {
+        res.render("index");
+    }
+}
