@@ -143,11 +143,11 @@ export class Init extends Command {
             'const PORT = process.env.PORT || 3000;\n' +
             'app.listen(PORT, () => console.log("server started on port " + PORT));'
 
-            if(FileSystem.writeFile("project/index.js", content)){
-                Print.success("index.js created");
+            if(FileSystem.writeFile("project/app.js", content)){
+                Print.success("app.js created");
             }
             else {
-                Print.warning("index.js already exists");
+                Print.warning("app.js already exists");
             }
             
         }

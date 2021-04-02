@@ -34,8 +34,8 @@ export class PackageJson {
      * dependencies for node js backend.
      */
     expressDependencies() {
-        this.packageJson.scripts["start"] = "node app/index.js";
-        this.packageJson.scripts["start-dev"] = "nodemon project/index.js -L";
+        this.packageJson.scripts["start"] = "node project/app.js";
+        this.packageJson.scripts["start-dev"] = "nodemon project/app.js -L";
         
         this.packageJson.dependencies["express"] = "^4.17.1";
         this.packageJson.dependencies["ejs"] = "^3.1.6";
