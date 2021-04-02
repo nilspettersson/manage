@@ -3,7 +3,7 @@
 
 ### Dependencies:
 * Docker
-* Node
+* Node js
 
 ### Commands:
 * Manage init
