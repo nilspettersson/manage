@@ -9,7 +9,6 @@ export class Util {
      */
     static getPreset(relativePath) {
         let pathToFile = path.join(__dirname, '..', '..', 'presets', relativePath);
-        console.log(pathToFile);
         return fs.readFileSync(pathToFile);
     }
 }

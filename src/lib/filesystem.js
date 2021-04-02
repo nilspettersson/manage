@@ -16,7 +16,6 @@ export class FileSystem {
         return false;
     }
 
-
     /**
      * @param {string} path Path for dir.
      */
