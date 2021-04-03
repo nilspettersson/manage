@@ -132,6 +132,7 @@ export class Init extends Command {
         FileSystem.createDir("project/views");
         FileSystem.createDir("project/public");
         FileSystem.createDir("project/public/img");
+        FileSystem.createDir("project/public/js");
         FileSystem.createDir("project/public/css");
         FileSystem.createDir("project/public/scss");
 
