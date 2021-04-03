@@ -44,6 +44,15 @@ export class PackageJson {
     }
 
     /**
+     * dependencies for node js frontend.
+     */
+     publicDependencies() {
+        this.packageJson.scripts["start"] = "webpack --config webpack.config.js";
+        this.packageJson.devDependencies["webpack"] = "^5.30.0";
+        this.packageJson.devDependencies["webpack-cli"] = "^4.6.0";
+    }
+
+    /**
      * 
      * @param {string} path File folder path.
      */

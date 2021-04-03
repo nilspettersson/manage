@@ -97,6 +97,7 @@ export class Init extends Command {
 
 
         let packageJson = new PackageJson(config);
+        packageJson.publicDependencies();
         packageJson.create("project/public/");
     }
 
@@ -135,6 +136,8 @@ export class Init extends Command {
         FileSystem.createDir("project/public/js");
         FileSystem.createDir("project/public/css");
         FileSystem.createDir("project/public/scss");
+
+        FileSystem.writeFile("project/public/webpack.config.js", Util.getPreset("webpack/webpack-config"));
 
         if(config.type == "node") {
             if(FileSystem.writeFile("project/app.js", Util.getPreset("node/node-app"))){
