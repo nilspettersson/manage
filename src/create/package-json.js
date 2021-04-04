@@ -47,7 +47,9 @@ export class PackageJson {
      * dependencies for node js frontend.
      */
      publicDependencies() {
-        this.packageJson.scripts["start"] = "webpack --config webpack.config.js";
+        this.packageJson.scripts["js"] = "webpack --config webpack.config.js";
+        this.packageJson.scripts["js-w"] = "webpack watch --config webpack.config.js";
+
         this.packageJson.devDependencies["webpack"] = "^5.30.0";
         this.packageJson.devDependencies["webpack-cli"] = "^4.6.0";
     }
