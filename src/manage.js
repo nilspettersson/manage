@@ -33,6 +33,10 @@ export class Manage extends Command {
             .command("stop", "Stops the app", {
                 
             })
+            .command("public", "Manages js, css and images", (args) => {
+                args.command("js", "Build js ");
+                args.command("js-w", "build and watch js ");
+            })
         ;
     }
 
