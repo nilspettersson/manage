@@ -138,6 +138,7 @@ export class Init extends Command {
         FileSystem.createDir("project/public/scss");
 
         FileSystem.writeFile("project/public/webpack.config.js", Util.getPreset("webpack/webpack-config"));
+        FileSystem.writeFile("project/public/js/index.js", "/*Webpack entry file*/");
 
         if(config.type == "node") {
             if(FileSystem.writeFile("project/app.js", Util.getPreset("node/node-app"))){
