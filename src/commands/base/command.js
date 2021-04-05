@@ -1,46 +1,46 @@
-import { Print } from "../../lib/print";
+const yargs = require("yargs");
 
 export class Command {
     /**
-     * @param {string} name Name of the command.
+     *  
+     * @param {string} name 
+     * @param {string} description 
+     * @param {yargs} options 
+     * @param {yargs} args 
      */
-    constructor(name) {
+    constructor(name, description, options, args) {
         this.name = name;
-        this.args = null;
-        this.depth = 0;
-        this.commands = [];
+        this.description = description;
+
+        this.options = options;
+        this.args = args;
+
+        this.setup();
     }
 
     /**
-     * @param {Command} command Command that comes after current command.
+     * @private
      */
-    add(command) {
-        command.args = this.args;
-        command.depth++;
-        this.commands.push(command);
+    setup() {
+        this.args.command(this.name, this.description, (args) => {
+            args.options(this.options);
+            this.execute(args);
+        });
     }
 
     /**
-     *  Will execute if there is no commands comming after this one
-     * @returns {void}
+     * 
+     * @param {yargs} args Parent yargs object.
      */
-    execute() {
-        Print.warning("No execution for this command ");
+    execute(args) {
+        console.log("no execution");
     }
 
     /**
-     *  Will check if there is a command after this one
-     * if not it will execute this command.
-     * @returns {void}
+     * 
+     * @returns {yargs} The command.
      */
-    start() {
-        for(let i = 0; i < this.commands.length; i++) {
-            if(this.args.argv._[this.depth] == this.commands[i].name) {
-                this.commands[i].start();
-                return;
-            }
-        }
-
-        this.execute();
+    getCommand() {
+        return this.args;
     }
 }
