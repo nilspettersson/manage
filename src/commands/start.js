@@ -5,8 +5,13 @@ import { Command } from './base/command';
 let shell = require('shelljs');
 
 export class Start extends Command {
-    constructor() {
-        super("start");
+    constructor(args) {
+        super("start", "Starts the app", {
+            detached: {
+                alias: "d",
+                describe: "Detached mode",
+            }
+        }, args);
     }
 
     execute() {

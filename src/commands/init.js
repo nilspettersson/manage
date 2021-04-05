@@ -10,10 +10,16 @@ let shell = require('shelljs');
 let fs = require('fs');
 
 export class Init extends Command {
-    constructor() {
-        super("init");
+    constructor(args) {
+        super("init", "Initilize a new project", {
+            type: {
+                alias: "t",
+                describe: "The type of project",
+                choices: ["static", "php", "node", "other"],
+            },
+        }, args);
     }
-
+    
     execute() {
         let config = {
             name: FileSystem.getName(),

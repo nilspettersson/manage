@@ -5,8 +5,8 @@ import { Command } from './base/command';
 let shell = require('shelljs');
 
 export class Stop extends Command {
-    constructor() {
-        super("stop");
+    constructor(args) {
+        super("stop", "Stops the app", {}, args);
     }
 
     execute() {
